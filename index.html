@@ -1,87 +1,253 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>GitHub Pages シンプルモダン</title>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-	<style>
-		:root {
-			--bg-color: #121212;
-			--accent: #007bff;
-			--text: #f5f5f5;
-			--card-bg: #1e1e1e;
-		}
-		html, body {
-			height: 100%;
-			margin: 0;
-			padding: 0;
-			background: var(--bg-color);
-			color: var(--text);
-			font-family: 'Inter', 'Roboto', sans-serif;
-			min-height: 100vh;
-		}
-		body {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-			min-height: 100vh;
-		}
-		.container {
-			background: var(--card-bg);
-			border-radius: 16px;
-			box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-			padding: 2rem 2.5rem;
-			max-width: 400px;
-			width: 90vw;
-			text-align: center;
-		}
-		h1 {
-			margin: 0 0 1rem 0;
-			font-size: 2rem;
-			font-weight: 700;
-			color: var(--accent);
-		}
-		p {
-			margin: 0 0 1.5rem 0;
-			font-size: 1.1rem;
-			line-height: 1.6;
-		}
-		a.button {
-			display: inline-block;
-			background: var(--accent);
-			color: #fff;
-			padding: 0.75rem 2rem;
-			border-radius: 8px;
-			text-decoration: none;
-			font-weight: 700;
-			transition: background 0.2s;
-			margin-top: 1rem;
-		}
-		a.button:hover {
-			background: #0056b3;
-		}
-		@media (max-width: 600px) {
-			.container {
-				padding: 1.2rem 0.5rem;
-				max-width: 98vw;
-			}
-			h1 {
-				font-size: 1.3rem;
-			}
-			p {
-				font-size: 1rem;
-			}
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Code Assist vs. GitHub Copilot</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --accent-color: #007bff;
+            --card-bg: #1e1e1e;
+            --button-color: #007bff;
+            --button-hover-color: #0056b3;
+            --loading-color: #e0e0e0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            padding: 2rem;
+            margin-top: 4rem;
+            margin-bottom: 4rem;
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+        }
+
+        h1, h2, h3 {
+            color: var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+            font-weight: 700;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            color: #fff;
+            border-bottom: none;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 1rem;
+        }
+
+        li {
+            background-color: #2a2a2a;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .gemini-feature-section {
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        #summarize-btn {
+            background-color: var(--button-color);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #summarize-btn:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        #summary-output {
+            margin-top: 2rem;
+            background-color: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            text-align: left;
+            border: 1px solid #333;
+        }
+
+        #loading-indicator {
+            margin-top: 2rem;
+            color: var(--loading-color);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                padding: 1.2rem;
+                margin-top: 2rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            p {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-	<div class="container">
-		<h1>Gemini Code AssistとGitHub Copilot</h1>
-		<p>Gemini Code AssistとGitHub Copilotを両方GitHubにインストールすると、<br>コード補完の精度が向上し、開発効率が大幅にアップします。<br>それぞれの強みを活かし、よりスマートな開発体験を実現します。</p>
-		<a href="#" class="button">詳細を見る</a>
-	</div>
+    <div class="container">
+        <h1>Gemini Code Assist vs. GitHub Copilot</h1>
+        <p>GitHubにGemini Code AssistとGitHub Copilotを両方インストールした結果について、両ツールの特徴と併用によるメリットを解説します。</p>
+        
+        <h2>概要</h2>
+        <p>両方のツールをインストールして使用した結果、それぞれの特徴と利点が明らかになりました。結論として、これらを併用することで、単なるコーディング作業の効率化だけでなく、より高度な問題解決能力も高まることが分かりました。</p>
+
+        <h2>GitHub Copilot</h2>
+        <p>GitHub Copilotは、リアルタイムのコード補完に特化しており、スムーズなコーディング体験を提供します。</p>
+
+        <h3>即座のコード提案</h3>
+        <p>関数の名前やコメントから、数秒でコードスニペット全体を提案してくれます。特に定型的な処理やボイラープレートコードの生成において、圧倒的な速度を発揮します。</p>
+        
+        <h3>学習データの影響</h3>
+        <p>GitHub上の膨大なパブリックコードから学習しているため、一般的なライブラリやフレームワークのパターンに非常に強いです。人気のある技術スタックを使っている場合、その恩恵を最大限に受けることができます。</p>
+
+        <h2>Gemini Code Assist</h2>
+        <p>Gemini Code Assistは、GitHub Copilotとは異なるアプローチで開発者を支援します。より対話的で、文脈を深く理解したサポートに強みがあります。</p>
+
+        <h3>チャット形式での対話</h3>
+        <p>コードの質問や、より複雑な問題解決を、チャット形式でサポートしてくれます。特定のアルゴリズムの解説や、コードの問題点のデバッグ、リファクタリングなど、より深いレベルでの対話が可能です。</p>
+
+        <h3>Googleエコシステムとの連携</h3>
+        <p>Googleの最新モデルであるGeminiを基盤としているため、より高度な推論能力と自然言語処理能力が期待できます。特にGoogle Cloudなどのサービスとの連携は今後の大きな強みとなるでしょう。</p>
+
+        <h2>比較と結論</h2>
+        <p>両方のツールを同時に使用しても、大きなパフォーマンスの問題は感じませんでした。それぞれが異なる役割を担い、互いを補完し合います。</p>
+
+        <h3>得意分野の使い分け</h3>
+        <ul>
+            <li>**GitHub Copilot**: コードの生産性を向上させる**「作業効率化ツール」**。日常的なタイピング作業を大幅に減らしてくれます。</li>
+            <li>**Gemini Code Assist**: 開発者の思考プロセスを支援する**「知識支援ツール」**。複雑なロジックや未知の問題に直面した際に、深い洞察と解決策を提供してくれます。</li>
+        </ul>
+        <p>結論として、単純作業の効率化と、より複雑な問題解決の両面でメリットを享受できるため、両者を併用することは非常に有効です。それぞれの強みを理解し、状況に応じて使い分けることが、現代のAI駆動型開発において重要になると感じます。</p>
+
+        <!-- New Gemini API feature section -->
+        <div class="gemini-feature-section">
+            <h2>✨ 記事要約ツール ✨</h2>
+            <p>このボタンをクリックすると、Gemini APIがこの記事の内容を要約します。</p>
+            <button id="summarize-btn">要約を生成する ✨</button>
+            <div id="loading-indicator" style="display: none;">要約を生成中...</div>
+            <pre id="summary-output"></pre>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const summarizeBtn = document.getElementById('summarize-btn');
+            const summaryOutput = document.getElementById('summary-output');
+            const loadingIndicator = document.getElementById('loading-indicator');
+
+            summarizeBtn.addEventListener('click', async () => {
+                // 記事のコンテンツ全体を取得
+                const articleContent = document.querySelector('.container').innerText;
+
+                // UIの更新
+                summarizeBtn.style.display = 'none';
+                summaryOutput.innerText = '';
+                loadingIndicator.style.display = 'block';
+
+                // APIリクエストのペイロードを作成
+                const userQuery = `以下の記事の内容を日本語で簡潔に要約してください。\n\n${articleContent}`;
+                const payload = {
+                    contents: [{
+                        parts: [{ text: userQuery }]
+                    }],
+                };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                
+                let retries = 0;
+                const maxRetries = 3;
+                let success = false;
+
+                while (retries < maxRetries && !success) {
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        
+                        if (!response.ok) {
+                            if (response.status === 429) {
+                                const delay = Math.pow(2, retries) * 1000;
+                                console.warn(`API rate limit exceeded. Retrying in ${delay / 1000}s...`);
+                                await new Promise(resolve => setTimeout(resolve, delay));
+                                retries++;
+                                continue;
+                            } else {
+                                throw new Error(`API request failed with status: ${response.status}`);
+                            }
+                        }
+
+                        const result = await response.json();
+                        const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                        if (generatedText) {
+                            summaryOutput.innerText = generatedText;
+                            success = true;
+                        } else {
+                            summaryOutput.innerText = '要約の生成に失敗しました。もう一度お試しください。';
+                        }
+                    } catch (error) {
+                        console.error('Error calling Gemini API:', error);
+                        summaryOutput.innerText = 'エラーが発生しました。コンソールを確認してください。';
+                    }
+                }
+
+                // UIを元の状態に戻す
+                loadingIndicator.style.display = 'none';
+                summarizeBtn.style.display = 'block';
+            });
+        });
+    </script>
 </body>
-</html>
 </html>
